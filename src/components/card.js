@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const Card = (article) => {
   // TASK 5
   // ---------------------
@@ -43,8 +45,6 @@ const Card = (article) => {
   return card;
 }
 
-console.log(Card({headline: "headline", authorPhoto: "https://www.gannett-cdn.com/-mm-/8033e8ef5d6e1a661de32756e1ba456e4a159c15/c=15-0-5392-3038/local/-/media/2018/05/03/USATODAY/USATODAY/636609579130932560-Steel-Vengeance-with-coaster-skyline-behind.jpg?width=1320&height=746&format=pjpg&auto=webp", authorName: "Alan Schilke"}))
-
 const cardAppender = (selector) => {
   // TASK 6
   // ---------------------
@@ -55,15 +55,20 @@ const cardAppender = (selector) => {
   // Append each card to the element in the DOM that matches the selector passed to the function.
   //
 
-  document.querySelector(selector).appendChild(Card({headline: "headline", authorPhoto: "https://www.gannett-cdn.com/-mm-/8033e8ef5d6e1a661de32756e1ba456e4a159c15/c=15-0-5392-3038/local/-/media/2018/05/03/USATODAY/USATODAY/636609579130932560-Steel-Vengeance-with-coaster-skyline-behind.jpg?width=1320&height=746&format=pjpg&auto=webp", authorName: "Alan Schilke"}));
-
-  // axios.get("http://localhost:5001/api/articles")
-  // .then( res => {
-  //   document.querySelector(selector).appendChild(Tabs(res.data.topics));
-  // })
-  // .catch( res => {
-  //   console.log(res);
-  // });
+  axios.get("http://localhost:5001/api/articles")
+  .then( res => {
+    const articles = res.data.articles;
+    
+    for (const prop in articles) {
+      articles[prop].forEach (el => {
+        const article = {headline: el.headline, authorName: el.authorName, authorPhoto: el.authorPhoto};
+        document.querySelector(selector).appendChild(Card(article));
+      });
+    }
+  })
+  .catch( res => {
+    console.log(res);
+  });
 }
 
 export { Card, cardAppender }
